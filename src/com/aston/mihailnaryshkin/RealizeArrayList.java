@@ -3,6 +3,11 @@ package com.aston.mihailnaryshkin;
 import java.util.Arrays;
 import java.util.Iterator;
 
+/**
+ * Class RealizeArrayList is a realization of own ArrayList
+ * @param <E>
+ */
+
 public class RealizeArrayList<E> implements RealisableArrList<E> {
 
     private E[] array;
@@ -33,12 +38,19 @@ public class RealizeArrayList<E> implements RealisableArrList<E> {
         return new ArrayIteratorImp<>(array);
     }
 
+    /**
+     * Method add value to arrayList
+     * @param value some value of any  type
+     * tempArray is temporary array.
+     * array is a target array
+     * @return true if value was added to arrayList
+     */
     @Override
     public boolean add(E value) {
         try {
-            E[] temArray = array;
-            array = (E[]) new Object[temArray.length + 1];
-            System.arraycopy(temArray, 0, array, 0, temArray.length);
+            E[] tempArray = array;
+            array = (E[]) new Object[tempArray.length + 1];
+            System.arraycopy(tempArray, 0, array, 0, tempArray.length);
             array[array.length-1] = value;
             return true;
         } catch (ClassCastException ex) {
@@ -46,6 +58,10 @@ public class RealizeArrayList<E> implements RealisableArrList<E> {
         }
         return false;
     }
+    /**
+     * Method delete value from arrayList
+     * @param index is an index of arrayList which will be deleted
+     */
 
     @Override
     public void delete(int index) {
