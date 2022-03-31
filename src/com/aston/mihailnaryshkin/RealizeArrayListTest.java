@@ -109,7 +109,7 @@ public class RealizeArrayListTest {
 
         //when we invoke method quickSort
         RealisableArrList<Integer> newIntegers = integers.quickSort();
-
+        String a = newIntegers.toString();
         //then we should get sorted arrayList
         RealizeArrayList<Integer> integers2 = new RealizeArrayList<>();
         integers2.add(1);
@@ -117,8 +117,8 @@ public class RealizeArrayListTest {
         integers2.add(3);
         integers2.add(5);
         integers2.add(7);
-
-        assertEquals(integers2, newIntegers);
+        String b = integers2.toString();
+        assertEquals(b, a);
     }
 
 
