@@ -8,12 +8,12 @@ import java.util.Iterator;
  * @param <E>
  */
 
-public class RealizeArrayList<E> implements RealisableArrList<E> {
+public class RealizeArrayList<E extends Comparable<E>> implements RealisableArrList<E> {
 
-    private E[] array;
+    private Object[] array;
 
     public RealizeArrayList() {
-        array = (E[]) new Object[0];
+        array = new Object[0];
     }
 
 
@@ -29,13 +29,9 @@ public class RealizeArrayList<E> implements RealisableArrList<E> {
         integers.add(8);
         integers.add(1);
 
-        System.out.println(integers);
-        System.out.println();
-    }
+        RealisableArrList<Integer> newIntegers = integers.quickSort();
 
-    @Override
-    public Iterator<E> iterator() {
-        return new ArrayIteratorImp<>(array);
+        System.out.println(newIntegers);
     }
 
     /**
@@ -48,8 +44,8 @@ public class RealizeArrayList<E> implements RealisableArrList<E> {
     @Override
     public boolean add(E value) {
         try {
-            E[] tempArray = array;
-            array = (E[]) new Object[tempArray.length + 1];
+            Object[] tempArray = array;
+            array = new Object[tempArray.length + 1];
             System.arraycopy(tempArray, 0, array, 0, tempArray.length);
             array[array.length-1] = value;
             return true;
@@ -66,8 +62,8 @@ public class RealizeArrayList<E> implements RealisableArrList<E> {
     @Override
     public void delete(int index) {
         try {
-            E[] temArray = array;
-            array = (E[]) new Object[temArray.length - 1];
+            Object[] temArray = array;
+            array = new Object[temArray.length - 1];
             System.arraycopy(temArray, 0, array, 0, index);
             System.arraycopy(temArray, index + 1, array, index,temArray.length - index - 1 );
         } catch (ClassCastException ex) {
@@ -75,17 +71,28 @@ public class RealizeArrayList<E> implements RealisableArrList<E> {
         }
 
     }
-
+    /**
+     * Method return value by index.
+     * @param index is an index of arrayList
+     */
     @Override
     public E get(int index) {
-        return array[index];
+        return (E) array[index];
     }
 
+    /**
+     * Method update value by index.
+     * @param index is an index of arrayList
+     * @param value is a new value for this element
+     */
     @Override
     public void update(int index, E value) {
         array[index] = value;
     }
 
+    /**
+     * Method return size (length) of the arrayLis.
+     */
     @Override
     public int size() {
         return array.length;
@@ -98,20 +105,33 @@ public class RealizeArrayList<E> implements RealisableArrList<E> {
                 '}';
     }
 
-    public RealizeArrayList<Integer> quickSort(RealizeArrayList<Integer> arList){
+    /**
+     * @return method quickSortRecurrsive
+     */
+    public RealizeArrayList<E> quickSort(){
+        return quickSortRecursive(this);
+    }
 
+    /**
+     * Method in for loop divide values on less or greater then pivot adding
+     * them in corresponding arrayLists.
+     * Recursively they are sorting
+     * @param arList is a arrayList
+     * @return method concatenate
+     */
+    private RealizeArrayList<E> quickSortRecursive(RealizeArrayList<E> arList) {
         if(arList.size() <= 1){
             return arList;
         }
 
-        int middle = (int) Math.ceil((double)arList.size() / 2);
-        int pivot = arList.get(middle);
+        int middle = (int) Math.ceil((double) arList.size() / 2);
+        E pivot = arList.get(middle);
 
-        RealizeArrayList<Integer> less = new RealizeArrayList<Integer>();
-        RealizeArrayList<Integer> greater = new RealizeArrayList<Integer>();
+        RealizeArrayList<E> less = new RealizeArrayList<>();
+        RealizeArrayList<E> greater = new RealizeArrayList<>();
 
         for (int i = 0; i < arList.size(); i++) {
-            if(arList.get(i) <= pivot){
+            if(arList.get(i).compareTo(pivot) <= 0){
                 if(i == middle){
                     continue;
                 }
@@ -122,21 +142,20 @@ public class RealizeArrayList<E> implements RealisableArrList<E> {
             }
         }
 
-        return concatenate(quickSort(less), pivot, quickSort(greater));
+        return concatenate(quickSortRecursive(less), pivot, quickSortRecursive(greater));
     }
 
     /**
-     * Join the less array, pivot integer, and greater array
-     * to single array.
-     * @param less integer ArrayList with values less than pivot.
-     * @param pivot the pivot integer.
-     * @param greater integer ArrayList with values greater than pivot.
-     * @return the integer ArrayList after join.
+     * Join the less arrayList, pivot, and greater arrayList to single array.
+     * @param less arrayList with values less than pivot.
+     * @param pivot the pivot.
+     * @param greater arrayList with values greater than pivot.
+     * @return the ArrayList after join.
      */
-    public RealizeArrayList<Integer> concatenate(RealizeArrayList<Integer> less, int pivot,
-                                                  RealizeArrayList<Integer> greater) {
+    public RealizeArrayList<E> concatenate(RealizeArrayList<E> less, E pivot,
+                                           RealizeArrayList<E> greater) {
 
-        RealizeArrayList<Integer> list = new RealizeArrayList<Integer>();
+        RealizeArrayList<E> list = new RealizeArrayList<>();
 
         for (int i = 0; i < less.size(); i++) {
             list.add(less.get(i));
@@ -150,4 +169,15 @@ public class RealizeArrayList<E> implements RealisableArrList<E> {
 
         return list;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        return super.equals(obj);
+    }
+
+    @Override
+    public Iterator<E> iterator() {
+        return new ArrayIteratorImp<>((E[]) array);
+    }
 }
+
